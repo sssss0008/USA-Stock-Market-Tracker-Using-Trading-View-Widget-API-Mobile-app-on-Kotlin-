@@ -102,6 +102,17 @@ enum class AppDestination {
 }
 
 class MainActivity : ComponentActivity() {
+  companion object {
+    init {
+      try {
+        android.system.Os.setenv("LIBGL_ALWAYS_SOFTWARE", "1", true)
+        android.system.Os.setenv("MESA_LOADER_DRIVER_OVERRIDE", "swrast", true)
+        android.system.Os.setenv("MESA_DEBUG", "silent", true)
+      } catch (_: Throwable) {
+      }
+    }
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     try {
