@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Candlestick 1 (Left - Cyan) -->
+    <path
+        android:pathData="M34,42 L34,70"
+        android:strokeWidth="1.5"
+        android:strokeColor="#38BDF8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M31,48 L37,48 L37,64 L31,64 Z"
+        android:fillColor="#38BDF8" />
+
+    <!-- Candlestick 2 (Center - Bull Green) -->
+    <path
+        android:pathData="M48,34 L48,66"
+        android:strokeWidth="1.5"
+        android:strokeColor="#22C55E"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M45,39 L51,39 L51,57 L45,57 Z"
+        android:fillColor="#22C55E" />
+
+    <!-- Candlestick 3 (Right - Emerald Green) -->
+    <path
+        android:pathData="M62,28 L62,58"
+        android:strokeWidth="1.5"
+        android:strokeColor="#10B981"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M59,32 L65,32 L65,50 L59,50 Z"
+        android:fillColor="#10B981" />
+
+    <!-- Upward Trend Trajectory Line -->
+    <path
+        android:pathData="M27,68 L41,52 L54,58 L77,32"
+        android:strokeWidth="3.2"
+        android:strokeColor="#38BDF8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Arrow head pointing northeast -->
+    <path
+        android:pathData="M66,32 L77,32 L77,43"
+        android:strokeWidth="3.2"
+        android:strokeColor="#38BDF8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Trend Glow Accent Dot at Peak -->
+    <path
+        android:pathData="M77,32 m -2,0 a 2,2 0 1,0 4,0 a 2,2 0 1,0 -4,0"
+        android:fillColor="#FFFFFF" />
+
+    <!-- US Market Tracker Base Line -->
+    <path
+        android:pathData="M26,76 L82,76"
+        android:strokeWidth="1.5"
+        android:strokeColor="#64748B"
+        android:strokeLineCap="round" />
+
+</vector>

@@ -1,0 +1,6 @@
+{
+  "name": "USA Stock Screener",
+  "description": "Comprehensive USA Stock Screener and market intelligence app featuring real-time charts, sector heatmaps, stock screener, and US economic calendar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
