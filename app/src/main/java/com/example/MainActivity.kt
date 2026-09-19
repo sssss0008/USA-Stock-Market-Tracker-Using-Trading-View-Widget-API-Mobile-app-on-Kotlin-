@@ -81,24 +81,40 @@ import com.example.model.NavigationTab
 import com.example.ui.components.GlassIconButton
 import com.example.ui.components.GlassStatusPill
 import com.example.ui.components.GlowingIconBadge
+import com.example.ui.components.MarketDrawerContent
 import com.example.ui.components.TickerTapeBar
 import com.example.ui.components.glassmorphic
 import com.example.ui.screens.AboutUsScreen
+import com.example.ui.screens.CalculatorScreen
 import com.example.ui.screens.ChartScreen
+import com.example.ui.screens.DictionaryScreen
 import com.example.ui.screens.EconomyScreen
 import com.example.ui.screens.HeatmapScreen
+import com.example.ui.screens.IndicatorsGuideScreen
+import com.example.ui.screens.MarketHoursScreen
 import com.example.ui.screens.OnboardingScreen
 import com.example.ui.screens.ScreenerScreen
 import com.example.ui.screens.SplashScreen
 import com.example.ui.screens.SymbolDetailsScreen
 import com.example.ui.theme.BullGreen
 import com.example.ui.theme.MyApplicationTheme
+import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 enum class AppDestination {
   SPLASH,
   ONBOARDING,
   MAIN_DASHBOARD,
-  ABOUT_US
+  ABOUT_US,
+  CALCULATOR,
+  DICTIONARY,
+  MARKET_HOURS,
+  INDICATORS_GUIDE
 }
 
 class MainActivity : ComponentActivity() {
@@ -168,7 +184,12 @@ class MainActivity : ComponentActivity() {
               UsaStockScreenerApp(
                 isDarkTheme = isDarkTheme,
                 onToggleTheme = { isDarkTheme = !isDarkTheme },
-                onOpenAboutUs = { destination = AppDestination.ABOUT_US }
+                onOpenAboutUs = { destination = AppDestination.ABOUT_US },
+                onOpenCalculator = { destination = AppDestination.CALCULATOR },
+                onOpenDictionary = { destination = AppDestination.DICTIONARY },
+                onOpenMarketHours = { destination = AppDestination.MARKET_HOURS },
+                onOpenIndicatorsGuide = { destination = AppDestination.INDICATORS_GUIDE },
+                onOpenWalkthrough = { destination = AppDestination.ONBOARDING }
               )
             }
 
@@ -179,6 +200,46 @@ class MainActivity : ComponentActivity() {
               AboutUsScreen(
                 onNavigateBack = { destination = AppDestination.MAIN_DASHBOARD },
                 onOpenWalkthrough = { destination = AppDestination.ONBOARDING },
+                isDark = isDarkTheme
+              )
+            }
+
+            AppDestination.CALCULATOR -> {
+              BackHandler {
+                destination = AppDestination.MAIN_DASHBOARD
+              }
+              CalculatorScreen(
+                onNavigateBack = { destination = AppDestination.MAIN_DASHBOARD },
+                isDark = isDarkTheme
+              )
+            }
+
+            AppDestination.DICTIONARY -> {
+              BackHandler {
+                destination = AppDestination.MAIN_DASHBOARD
+              }
+              DictionaryScreen(
+                onNavigateBack = { destination = AppDestination.MAIN_DASHBOARD },
+                isDark = isDarkTheme
+              )
+            }
+
+            AppDestination.MARKET_HOURS -> {
+              BackHandler {
+                destination = AppDestination.MAIN_DASHBOARD
+              }
+              MarketHoursScreen(
+                onNavigateBack = { destination = AppDestination.MAIN_DASHBOARD },
+                isDark = isDarkTheme
+              )
+            }
+
+            AppDestination.INDICATORS_GUIDE -> {
+              BackHandler {
+                destination = AppDestination.MAIN_DASHBOARD
+              }
+              IndicatorsGuideScreen(
+                onNavigateBack = { destination = AppDestination.MAIN_DASHBOARD },
                 isDark = isDarkTheme
               )
             }
@@ -194,92 +255,152 @@ class MainActivity : ComponentActivity() {
 fun UsaStockScreenerApp(
   isDarkTheme: Boolean,
   onToggleTheme: () -> Unit,
-  onOpenAboutUs: () -> Unit
+  onOpenAboutUs: () -> Unit,
+  onOpenCalculator: () -> Unit,
+  onOpenDictionary: () -> Unit,
+  onOpenMarketHours: () -> Unit,
+  onOpenIndicatorsGuide: () -> Unit,
+  onOpenWalkthrough: () -> Unit
 ) {
   var currentTab by remember { mutableStateOf(NavigationTab.CHART) }
   var showTickerTape by remember { mutableStateOf(true) }
   var reloadTrigger by remember { mutableIntStateOf(0) }
 
-  Scaffold(
-    modifier = Modifier
-      .fillMaxSize()
-      .testTag("usa_stock_screener_scaffold"),
-    topBar = {
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.96f))
-          .statusBarsPadding()
-      ) {
-        Row(
+  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+  val scope = rememberCoroutineScope()
+
+  ModalNavigationDrawer(
+    drawerState = drawerState,
+    drawerContent = {
+      MarketDrawerContent(
+        currentTab = currentTab,
+        onSelectTab = { tab ->
+          currentTab = tab
+          scope.launch { drawerState.close() }
+        },
+        onOpenCalculator = {
+          scope.launch { drawerState.close() }
+          onOpenCalculator()
+        },
+        onOpenDictionary = {
+          scope.launch { drawerState.close() }
+          onOpenDictionary()
+        },
+        onOpenMarketHours = {
+          scope.launch { drawerState.close() }
+          onOpenMarketHours()
+        },
+        onOpenIndicatorsGuide = {
+          scope.launch { drawerState.close() }
+          onOpenIndicatorsGuide()
+        },
+        onOpenAboutUs = {
+          scope.launch { drawerState.close() }
+          onOpenAboutUs()
+        },
+        onOpenWalkthrough = {
+          scope.launch { drawerState.close() }
+          onOpenWalkthrough()
+        },
+        isDarkTheme = isDarkTheme,
+        onToggleTheme = onToggleTheme
+      )
+    }
+  ) {
+    Scaffold(
+      modifier = Modifier
+        .fillMaxSize()
+        .testTag("usa_stock_screener_scaffold"),
+      topBar = {
+        Column(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp, vertical = 10.dp),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.96f))
+            .statusBarsPadding()
         ) {
           Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
           ) {
-            GlowingIconBadge(
-              icon = Icons.AutoMirrored.Filled.TrendingUp,
-              contentDescription = null,
-              size = 40.dp,
-              iconSize = 22.dp,
-              tint = MaterialTheme.colorScheme.primary,
-              containerColor = MaterialTheme.colorScheme.primary
-            )
-            Column {
-              Text(
-                text = "USA Stock Screener",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = (-0.3).sp,
-                color = MaterialTheme.colorScheme.onSurface
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              GlassIconButton(
+                icon = Icons.Default.Menu,
+                contentDescription = "Open Navigation Drawer",
+                tint = MaterialTheme.colorScheme.primary,
+                onClick = { scope.launch { drawerState.open() } },
+                modifier = Modifier.testTag("drawer_menu_button")
               )
-              Spacer(modifier = Modifier.height(2.dp))
-              GlassStatusPill(
-                text = "LIVE • FREE & PRIVATE",
-                accentColor = BullGreen
+              GlowingIconBadge(
+                icon = Icons.AutoMirrored.Filled.TrendingUp,
+                contentDescription = null,
+                size = 38.dp,
+                iconSize = 20.dp,
+                tint = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.primary
+              )
+              Column {
+                Text(
+                  text = "USA Stock Screener",
+                  style = MaterialTheme.typography.titleMedium,
+                  fontWeight = FontWeight.ExtraBold,
+                  letterSpacing = (-0.3).sp,
+                  color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                GlassStatusPill(
+                  text = "LIVE • FREE & PRIVATE",
+                  accentColor = BullGreen
+                )
+              }
+            }
+
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+              GlassIconButton(
+                icon = Icons.Default.Calculate,
+                contentDescription = "Investment Calculators",
+                tint = MaterialTheme.colorScheme.primary,
+                onClick = onOpenCalculator,
+                modifier = Modifier.testTag("calculator_header_button")
+              )
+              GlassIconButton(
+                icon = Icons.Default.Info,
+                contentDescription = "About Us & Contact",
+                tint = MaterialTheme.colorScheme.primary,
+                onClick = onOpenAboutUs,
+                modifier = Modifier.testTag("about_us_button")
+              )
+              GlassIconButton(
+                icon = Icons.Default.ViewStream,
+                contentDescription = "Toggle Ticker Tape",
+                tint = if (showTickerTape) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                onClick = { showTickerTape = !showTickerTape },
+                modifier = Modifier.testTag("toggle_ticker_tape_button")
+              )
+              GlassIconButton(
+                icon = Icons.Default.Refresh,
+                contentDescription = "Refresh Market Data",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                onClick = { reloadTrigger++ },
+                modifier = Modifier.testTag("refresh_button")
+              )
+              GlassIconButton(
+                icon = if (isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
+                contentDescription = if (isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                onClick = onToggleTheme,
+                modifier = Modifier.testTag("toggle_theme_button")
               )
             }
           }
-
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-          ) {
-            GlassIconButton(
-              icon = Icons.Default.Info,
-              contentDescription = "About Us & Contact",
-              tint = MaterialTheme.colorScheme.primary,
-              onClick = onOpenAboutUs,
-              modifier = Modifier.testTag("about_us_button")
-            )
-            GlassIconButton(
-              icon = Icons.Default.ViewStream,
-              contentDescription = "Toggle Ticker Tape",
-              tint = if (showTickerTape) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-              onClick = { showTickerTape = !showTickerTape },
-              modifier = Modifier.testTag("toggle_ticker_tape_button")
-            )
-            GlassIconButton(
-              icon = Icons.Default.Refresh,
-              contentDescription = "Refresh Market Data",
-              tint = MaterialTheme.colorScheme.onSurfaceVariant,
-              onClick = { reloadTrigger++ },
-              modifier = Modifier.testTag("refresh_button")
-            )
-            GlassIconButton(
-              icon = if (isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
-              contentDescription = if (isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode",
-              tint = MaterialTheme.colorScheme.onSurfaceVariant,
-              onClick = onToggleTheme,
-              modifier = Modifier.testTag("toggle_theme_button")
-            )
-          }
-        }
 
         // Live Ticker Tape Bar
         AnimatedVisibility(
@@ -468,6 +589,7 @@ fun UsaStockScreenerApp(
         }
       }
     }
+  }
   }
 }
 
